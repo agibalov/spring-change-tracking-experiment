@@ -1,4 +1,4 @@
-package me.loki2302;
+package me.loki2302.changelog;
 
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
@@ -10,13 +10,13 @@ import java.util.List;
 @Component
 @Scope(value = "request", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class ChangeLog {
-    private List<App.ChangeLogEvent> events = new ArrayList<App.ChangeLogEvent>();
+    private List<ChangeLogEvent> events = new ArrayList<ChangeLogEvent>();
 
-    public void append(App.ChangeLogEvent changeLogEvent) {
+    public void append(ChangeLogEvent changeLogEvent) {
         events.add(changeLogEvent);
     }
 
-    public List<App.ChangeLogEvent> getEvents() {
+    public List<ChangeLogEvent> getEvents() {
         return events;
     }
 }

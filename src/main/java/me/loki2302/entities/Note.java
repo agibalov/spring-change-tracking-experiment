@@ -1,4 +1,4 @@
-package me.loki2302;
+package me.loki2302.entities;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
