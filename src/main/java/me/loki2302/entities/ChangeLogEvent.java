@@ -1,7 +1,9 @@
-package me.loki2302.changelog;
+package me.loki2302.entities;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+import javax.persistence.*;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
@@ -12,7 +14,17 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = UpdateEntityChangeLogEvent.class, name = "update"),
         @JsonSubTypes.Type(value = DeleteEntityChangeLogEvent.class, name = "delete")
 })
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(
+        name = "entityType",
+        discriminatorType = DiscriminatorType.STRING
+)
 public abstract class ChangeLogEvent {
+    @Id
+    @GeneratedValue
+    public Long idid;
+
     public String id;
     public String name;
 }

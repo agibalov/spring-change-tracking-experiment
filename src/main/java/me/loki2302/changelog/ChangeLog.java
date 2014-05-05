@@ -1,5 +1,7 @@
 package me.loki2302.changelog;
 
+import me.loki2302.entities.ChangeLogEvent;
+import me.loki2302.entities.ChangeLogEventRepository;
 import me.loki2302.entities.ChangeLogTransaction;
 import me.loki2302.entities.ChangeLogTransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,9 @@ public class ChangeLog {
     @Autowired
     private ChangeLogTransactionRepository changeLogTransactionRepository;
 
+    @Autowired
+    private ChangeLogEventRepository changeLogEventRepository;
+
     public void append(ChangeLogEvent changeLogEvent) {
         events.add(changeLogEvent);
     }
@@ -32,11 +37,14 @@ public class ChangeLog {
         System.out.println("PREDESTROY!!!");
         ChangeLogEvent changeLogEvent = events.get(0);
 
+        events = changeLogEventRepository.save(events);
+
         ChangeLogTransaction changeLogTransaction = new ChangeLogTransaction();
         changeLogTransaction.description = String.format(
                 "Event: id=%s, name=%s",
                 changeLogEvent.id,
                 changeLogEvent.name);
+        changeLogTransaction.events = events;
         changeLogTransactionRepository.save(changeLogTransaction);
     }
 }

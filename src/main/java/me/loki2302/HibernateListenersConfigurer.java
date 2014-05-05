@@ -1,10 +1,7 @@
 package me.loki2302;
 
 import me.loki2302.changelog.ChangeLog;
-import me.loki2302.changelog.CreateEntityChangeLogEvent;
-import me.loki2302.changelog.DeleteEntityChangeLogEvent;
-import me.loki2302.changelog.UpdateEntityChangeLogEvent;
-import me.loki2302.entities.Note;
+import me.loki2302.entities.*;
 import org.hibernate.event.service.spi.EventListenerRegistry;
 import org.hibernate.event.spi.*;
 import org.hibernate.internal.SessionFactoryImpl;
@@ -15,8 +12,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManagerFactory;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class HibernateListenersConfigurer {
@@ -26,14 +23,15 @@ public class HibernateListenersConfigurer {
     @Autowired
     private ChangeLog changeLog;
 
-    private static Map<String, Object> makePropertyMap(String[] propertyNames, Object[] propertyValues) {
-        Map<String, Object> properties = new HashMap<String, Object>();
+    private static List<PropertyInfo> makePropertyInfoList(String[] propertyNames, Object[] propertyValues) {
+        List<PropertyInfo> propertyInfoList = new ArrayList<PropertyInfo>();
         for(int i = 0; i < propertyNames.length; ++i) {
-            String propertyName = propertyNames[i];
-            Object propertyValue = propertyValues[i];
-            properties.put(propertyName, propertyValue);
+            PropertyInfo propertyInfo = new PropertyInfo();
+            propertyInfo.name = propertyNames[i];
+            propertyInfo.value = String.valueOf(propertyValues[i]);
+            propertyInfoList.add(propertyInfo);
         }
-        return properties;
+        return propertyInfoList;
     }
 
     private static boolean shouldProcessEntity(Object entity) {
@@ -59,7 +57,7 @@ public class HibernateListenersConfigurer {
                 CreateEntityChangeLogEvent changeLogEvent = new CreateEntityChangeLogEvent();
                 changeLogEvent.name = event.getEntityName();
                 changeLogEvent.id = (String)event.getId();
-                changeLogEvent.properties = makePropertyMap(propertyNames, event.getState());
+                changeLogEvent.properties = makePropertyInfoList(propertyNames, event.getState());
                 changeLog.append(changeLogEvent);
 
                 return false;
@@ -79,8 +77,8 @@ public class HibernateListenersConfigurer {
                 UpdateEntityChangeLogEvent changeLogEvent = new UpdateEntityChangeLogEvent();
                 changeLogEvent.name = event.getEntityName();
                 changeLogEvent.id = (String)event.getId();
-                changeLogEvent.oldProperties = makePropertyMap(propertyNames, event.getOldState());
-                changeLogEvent.properties = makePropertyMap(propertyNames, event.getState());
+                changeLogEvent.oldProperties = makePropertyInfoList(propertyNames, event.getOldState());
+                changeLogEvent.properties = makePropertyInfoList(propertyNames, event.getState());
                 changeLog.append(changeLogEvent);
 
                 return false;
