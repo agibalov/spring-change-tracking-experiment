@@ -5,6 +5,8 @@ import me.loki2302.dto.DeleteNoteDto;
 import me.loki2302.dto.ErrorDto;
 import me.loki2302.dto.NoteDto;
 import me.loki2302.dto.NoteFieldsDto;
+import me.loki2302.entities.ChangeLogTransaction;
+import me.loki2302.entities.ChangeLogTransactionRepository;
 import me.loki2302.entities.Note;
 import me.loki2302.entities.NoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/notes/")

@@ -63,10 +63,4 @@ public class AppTest {
             assertEquals(HttpStatus.CONFLICT, e.getStatusCode());
         }
     }
-
-    @Test
-    public void dummy() {
-        String s = new RestTemplate().getForObject("http://localhost:8080/", String.class);
-        assertEquals("Hello there!", s);
-    }
 }

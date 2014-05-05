@@ -1,7 +1,6 @@
 package me.loki2302.entities;
 
 import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
 import javax.persistence.Id;
 
 @Entity
@@ -15,4 +14,5 @@ public class Note {
     public String toString() {
         return String.format("Note(%s,%s)", id, text);
     }
+
 }

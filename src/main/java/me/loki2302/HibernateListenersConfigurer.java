@@ -4,6 +4,7 @@ import me.loki2302.changelog.ChangeLog;
 import me.loki2302.changelog.CreateEntityChangeLogEvent;
 import me.loki2302.changelog.DeleteEntityChangeLogEvent;
 import me.loki2302.changelog.UpdateEntityChangeLogEvent;
+import me.loki2302.entities.Note;
 import org.hibernate.event.service.spi.EventListenerRegistry;
 import org.hibernate.event.spi.*;
 import org.hibernate.internal.SessionFactoryImpl;
@@ -35,6 +36,10 @@ public class HibernateListenersConfigurer {
         return properties;
     }
 
+    private static boolean shouldProcessEntity(Object entity) {
+        return entity instanceof Note;
+    }
+
     @PostConstruct
     public void init() {
         HibernateEntityManagerFactory hibernateEntityManagerFactory = (HibernateEntityManagerFactory) this.entityManagerFactory;
@@ -44,6 +49,10 @@ public class HibernateListenersConfigurer {
         eventListenerRegistry.appendListeners(EventType.PRE_INSERT, new PreInsertEventListener() {
             @Override
             public boolean onPreInsert(PreInsertEvent event) {
+                if(!shouldProcessEntity(event.getEntity())) {
+                    return false;
+                }
+
                 EntityPersister entityPersister = event.getPersister();
                 String[] propertyNames = entityPersister.getPropertyNames();
 
@@ -60,6 +69,10 @@ public class HibernateListenersConfigurer {
         eventListenerRegistry.appendListeners(EventType.PRE_UPDATE, new PreUpdateEventListener() {
             @Override
             public boolean onPreUpdate(PreUpdateEvent event) {
+                if(!shouldProcessEntity(event.getEntity())) {
+                    return false;
+                }
+
                 EntityPersister entityPersister = event.getPersister();
                 String[] propertyNames = entityPersister.getPropertyNames();
 
@@ -77,6 +90,10 @@ public class HibernateListenersConfigurer {
         eventListenerRegistry.appendListeners(EventType.PRE_DELETE, new PreDeleteEventListener() {
             @Override
             public boolean onPreDelete(PreDeleteEvent event) {
+                if(!shouldProcessEntity(event.getEntity())) {
+                    return false;
+                }
+
                 DeleteEntityChangeLogEvent changeLogEvent = new DeleteEntityChangeLogEvent();
                 changeLogEvent.name = event.getEntityName();
                 changeLogEvent.id = (String)event.getId();
