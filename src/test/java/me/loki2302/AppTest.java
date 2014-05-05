@@ -1,5 +1,7 @@
 package me.loki2302;
 
+import me.loki2302.changelog.ChangeLogEvent;
+import me.loki2302.changelog.CreateEntityChangeLogEvent;
 import me.loki2302.dto.NoteDto;
 import me.loki2302.dto.NoteFieldsDto;
 import org.junit.Test;
@@ -12,6 +14,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -31,6 +35,16 @@ public class AppTest {
         assertNotNull(noteDto);
         assertEquals("hello", noteDto.text);
         assertFalse(noteDto.id == null || noteDto.id.isEmpty());
+
+        List<ChangeLogEvent> changeLogEvents = noteDto.events;
+        assertEquals(1, changeLogEvents.size());
+        assertTrue(changeLogEvents.get(0) instanceof CreateEntityChangeLogEvent);
+        CreateEntityChangeLogEvent createEntityChangeLogEvent = (CreateEntityChangeLogEvent)changeLogEvents.get(0);
+        assertEquals(noteDto.id, createEntityChangeLogEvent.id);
+        assertEquals("me.loki2302.entities.Note", createEntityChangeLogEvent.name);
+        assertEquals(2, createEntityChangeLogEvent.properties.size());
+        assertEquals(noteDto.text, createEntityChangeLogEvent.properties.get("text"));
+        assertNull(createEntityChangeLogEvent.properties.get("text2"));
     }
 
     @Test

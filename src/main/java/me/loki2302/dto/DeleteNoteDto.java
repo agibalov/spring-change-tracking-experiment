@@ -4,8 +4,6 @@ import me.loki2302.changelog.ChangeLogEvent;
 
 import java.util.List;
 
-public class NoteDto extends NoteFieldsDto {
-    public String id;
+public class DeleteNoteDto {
     public List<ChangeLogEvent> events;
-
 }

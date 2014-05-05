@@ -1,6 +1,7 @@
 package me.loki2302.controllers;
 
 import me.loki2302.changelog.ChangeLog;
+import me.loki2302.dto.DeleteNoteDto;
 import me.loki2302.dto.ErrorDto;
 import me.loki2302.dto.NoteDto;
 import me.loki2302.dto.NoteFieldsDto;
@@ -98,6 +99,9 @@ public class NoteController {
 
         noteRepository.delete(id);
 
-        return new ResponseEntity<Void>(HttpStatus.ACCEPTED);
+        DeleteNoteDto deleteNoteDto = new DeleteNoteDto();
+        deleteNoteDto.events = changeLog.getEvents();
+
+        return new ResponseEntity<DeleteNoteDto>(deleteNoteDto, HttpStatus.OK);
     }
 }
