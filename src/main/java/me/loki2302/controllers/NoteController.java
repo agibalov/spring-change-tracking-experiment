@@ -10,8 +10,6 @@ import me.loki2302.entities.NoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -24,6 +22,8 @@ public class NoteController {
 
     @Autowired
     private ChangeLog changeLog;
+
+    // TODO: add getAllNotes() at /notes/
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public Object getNote(@PathVariable String id) {
@@ -42,6 +42,7 @@ public class NoteController {
         return new ResponseEntity<NoteDto>(noteDto, HttpStatus.OK);
     }
 
+    // TODO: remove this method, move functionality to PUT handler
     @RequestMapping(value = "/{id}", method = RequestMethod.POST)
     public Object createNote(
             @PathVariable String id,
@@ -66,6 +67,7 @@ public class NoteController {
         return new ResponseEntity<NoteDto>(noteDto, HttpStatus.CREATED);
     }
 
+    // TODO: make this behave as "update or create"
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public Object updateNote(
             @PathVariable String id,
