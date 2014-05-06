@@ -90,5 +90,19 @@ public class AppTest {
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertTrue(responseEntity.getBody().isEmpty());
+
+        try {
+            restTemplate.getForObject(buildUri("/transactions/first"), ChangeLogTransaction.class);
+            fail();
+        } catch(HttpClientErrorException e) {
+            assertEquals(HttpStatus.NOT_FOUND, e.getStatusCode());
+        }
+
+        try {
+            restTemplate.getForObject(buildUri("/transactions/last"), ChangeLogTransaction.class);
+            fail();
+        } catch(HttpClientErrorException e) {
+            assertEquals(HttpStatus.NOT_FOUND, e.getStatusCode());
+        }
     }
 }
