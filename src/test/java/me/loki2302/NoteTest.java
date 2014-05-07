@@ -56,4 +56,39 @@ public class NoteTest extends AbstractIntegrationTest {
         assertEquals("note1", noteDto.id);
         assertEquals("hi", noteDto.text);
     }
+
+    @Test
+    @DirtiesContext
+    public void canGetAllNotes() {
+        noteOperations.createNote("note1", "hi");
+        noteOperations.createNote("note2", "bye");
+
+        List<NoteDto> notes = noteOperations.getAllNotes();
+        assertEquals(2, notes.size());
+        assertEquals("note1", notes.get(0).id);
+        assertEquals("note2", notes.get(1).id);
+    }
+
+    @Test
+    @DirtiesContext
+    public void canDeleteNote() {
+        noteOperations.createNote("note1", "hi");
+        noteOperations.deleteNote("note1");
+
+        try {
+            noteOperations.getNote("note1");
+            fail();
+        } catch(HttpClientErrorException e) {
+            assertEquals(HttpStatus.NOT_FOUND, e.getStatusCode());
+        }
+    }
+
+    @Test
+    @DirtiesContext
+    public void canUpdateNote() {
+        noteOperations.createNote("note1", "hi");
+        noteOperations.updateNote("note1", "bye");
+        NoteDto note = noteOperations.getNote("note1");
+        assertEquals("bye", note.text);
+    }
 }
