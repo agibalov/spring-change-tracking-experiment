@@ -6,5 +6,4 @@ import java.util.List;
 
 public class NoteDto extends NoteFieldsDto {
     public String id;
-    public List<ChangeLogEvent> events; // TODO: remove this
 }

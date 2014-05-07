@@ -36,7 +36,7 @@ public class NoteOperations {
 
     public List<NoteDto> getAllNotes() {
         ResponseEntity<List<NoteDto>> responseEntity = restTemplate.exchange(
-                buildUri("notes"),
+                buildUri("notes/"),
                 HttpMethod.GET,
                 HttpEntity.EMPTY,
                 new ParameterizedTypeReference<List<NoteDto>>() {});

@@ -22,6 +22,12 @@ public class NoteTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void thereAreNoNotesByDefault() {
+        List<NoteDto> noteDtos = noteOperations.getAllNotes();
+        assertTrue(noteDtos.isEmpty());
+    }
+
+    @Test
     @DirtiesContext
     public void canCreateNote() {
         NoteDto noteDto = noteOperations.createNote("note1", "hi");

@@ -1,7 +1,6 @@
 package me.loki2302.controllers;
 
 import me.loki2302.changelog.ChangeLog;
-import me.loki2302.dto.DeleteNoteDto;
 import me.loki2302.dto.ErrorDto;
 import me.loki2302.dto.NoteDto;
 import me.loki2302.dto.NoteFieldsDto;
@@ -13,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/notes/")
@@ -21,9 +21,17 @@ public class NoteController {
     private NoteRepository noteRepository;
 
     @Autowired
+    private NoteMapper noteMapper;
+
+    @Autowired
     private ChangeLog changeLog;
 
-    // TODO: add getAllNotes() at /notes/
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public Object getAllNotes() {
+        List<Note> notes = noteRepository.findAll();
+        List<NoteDto> noteDtos = noteMapper.makeNoteDtos(notes);
+        return new ResponseEntity<List<NoteDto>>(noteDtos, HttpStatus.OK);
+    }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public Object getNote(@PathVariable String id) {
@@ -34,10 +42,7 @@ public class NoteController {
             return new ResponseEntity<ErrorDto>(errorDto, HttpStatus.NOT_FOUND);
         }
 
-        NoteDto noteDto = new NoteDto();
-        noteDto.id = note.id;
-        noteDto.text = note.text;
-        noteDto.events = changeLog.getEvents();
+        NoteDto noteDto = noteMapper.makeNoteDto(note);
 
         return new ResponseEntity<NoteDto>(noteDto, HttpStatus.OK);
     }
@@ -59,10 +64,7 @@ public class NoteController {
         note.text = noteFieldsDto.text;
         note = noteRepository.save(note);
 
-        NoteDto noteDto = new NoteDto();
-        noteDto.id = note.id;
-        noteDto.text = note.text;
-        noteDto.events = changeLog.getEvents();
+        NoteDto noteDto = noteMapper.makeNoteDto(note);
 
         return new ResponseEntity<NoteDto>(noteDto, HttpStatus.CREATED);
     }
@@ -84,10 +86,7 @@ public class NoteController {
 
         note = noteRepository.save(note);
 
-        NoteDto noteDto = new NoteDto();
-        noteDto.id = note.id;
-        noteDto.text = note.text;
-        noteDto.events = changeLog.getEvents();
+        NoteDto noteDto = noteMapper.makeNoteDto(note);
 
         return new ResponseEntity<NoteDto>(noteDto, HttpStatus.OK);
     }
@@ -103,9 +102,6 @@ public class NoteController {
 
         noteRepository.delete(id);
 
-        DeleteNoteDto deleteNoteDto = new DeleteNoteDto();
-        deleteNoteDto.events = changeLog.getEvents();
-
-        return new ResponseEntity<DeleteNoteDto>(deleteNoteDto, HttpStatus.OK);
+        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 }
