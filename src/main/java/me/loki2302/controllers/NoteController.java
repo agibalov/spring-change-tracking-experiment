@@ -28,23 +28,31 @@ public class NoteController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public Object getAllNotes() {
-        List<Note> notes = noteRepository.findAll();
-        List<NoteDto> noteDtos = noteMapper.makeNoteDtos(notes);
-        return new ResponseEntity<List<NoteDto>>(noteDtos, HttpStatus.OK);
+        try {
+            List<Note> notes = noteRepository.findAll();
+            List<NoteDto> noteDtos = noteMapper.makeNoteDtos(notes);
+            return new ResponseEntity<List<NoteDto>>(noteDtos, HttpStatus.OK);
+        } finally {
+            changeLog.saveLog();
+        }
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     public Object getNote(@PathVariable String id) {
-        Note note = noteRepository.findOne(id);
-        if(note == null) {
-            ErrorDto errorDto = new ErrorDto();
-            errorDto.message = "No such note";
-            return new ResponseEntity<ErrorDto>(errorDto, HttpStatus.NOT_FOUND);
+        try {
+            Note note = noteRepository.findOne(id);
+            if (note == null) {
+                ErrorDto errorDto = new ErrorDto();
+                errorDto.message = "No such note";
+                return new ResponseEntity<ErrorDto>(errorDto, HttpStatus.NOT_FOUND);
+            }
+
+            NoteDto noteDto = noteMapper.makeNoteDto(note);
+
+            return new ResponseEntity<NoteDto>(noteDto, HttpStatus.OK);
+        } finally {
+            changeLog.saveLog();
         }
-
-        NoteDto noteDto = noteMapper.makeNoteDto(note);
-
-        return new ResponseEntity<NoteDto>(noteDto, HttpStatus.OK);
     }
 
     // TODO: remove this method, move functionality to PUT handler
@@ -52,21 +60,25 @@ public class NoteController {
     public Object createNote(
             @PathVariable String id,
             @RequestBody @Valid NoteFieldsDto noteFieldsDto) {
-        Note existingNote = noteRepository.findOne(id);
-        if(existingNote != null) {
-            ErrorDto errorDto = new ErrorDto();
-            errorDto.message = "Note already exists";
-            return new ResponseEntity<ErrorDto>(errorDto, HttpStatus.CONFLICT);
+        try {
+            Note existingNote = noteRepository.findOne(id);
+            if(existingNote != null) {
+                ErrorDto errorDto = new ErrorDto();
+                errorDto.message = "Note already exists";
+                return new ResponseEntity<ErrorDto>(errorDto, HttpStatus.CONFLICT);
+            }
+
+            Note note = new Note();
+            note.id = id;
+            note.text = noteFieldsDto.text;
+            note = noteRepository.save(note);
+
+            NoteDto noteDto = noteMapper.makeNoteDto(note);
+
+            return new ResponseEntity<NoteDto>(noteDto, HttpStatus.CREATED);
+        } finally {
+            changeLog.saveLog();
         }
-
-        Note note = new Note();
-        note.id = id;
-        note.text = noteFieldsDto.text;
-        note = noteRepository.save(note);
-
-        NoteDto noteDto = noteMapper.makeNoteDto(note);
-
-        return new ResponseEntity<NoteDto>(noteDto, HttpStatus.CREATED);
     }
 
     // TODO: make this behave as "update or create"
@@ -75,33 +87,41 @@ public class NoteController {
             @PathVariable String id,
             @RequestBody @Valid NoteFieldsDto noteFieldsDto) {
 
-        Note note = noteRepository.findOne(id);
-        if(note == null) {
-            ErrorDto errorDto = new ErrorDto();
-            errorDto.message = "No such note";
-            return new ResponseEntity<ErrorDto>(errorDto, HttpStatus.NOT_FOUND);
+        try {
+            Note note = noteRepository.findOne(id);
+            if (note == null) {
+                ErrorDto errorDto = new ErrorDto();
+                errorDto.message = "No such note";
+                return new ResponseEntity<ErrorDto>(errorDto, HttpStatus.NOT_FOUND);
+            }
+
+            note.text = noteFieldsDto.text;
+
+            note = noteRepository.save(note);
+
+            NoteDto noteDto = noteMapper.makeNoteDto(note);
+
+            return new ResponseEntity<NoteDto>(noteDto, HttpStatus.OK);
+        } finally {
+            changeLog.saveLog();
         }
-
-        note.text = noteFieldsDto.text;
-
-        note = noteRepository.save(note);
-
-        NoteDto noteDto = noteMapper.makeNoteDto(note);
-
-        return new ResponseEntity<NoteDto>(noteDto, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
     public Object deleteNote(@PathVariable String id) {
-        Note note = noteRepository.findOne(id);
-        if(note == null) {
-            ErrorDto errorDto = new ErrorDto();
-            errorDto.message = "No such note";
-            return new ResponseEntity<ErrorDto>(errorDto, HttpStatus.NOT_FOUND);
+        try {
+            Note note = noteRepository.findOne(id);
+            if(note == null) {
+                ErrorDto errorDto = new ErrorDto();
+                errorDto.message = "No such note";
+                return new ResponseEntity<ErrorDto>(errorDto, HttpStatus.NOT_FOUND);
+            }
+
+            noteRepository.delete(id);
+
+            return new ResponseEntity<Void>(HttpStatus.OK);
+        } finally {
+            changeLog.saveLog();
         }
-
-        noteRepository.delete(id);
-
-        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 }

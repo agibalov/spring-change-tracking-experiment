@@ -32,19 +32,23 @@ public class ChangeLog {
         return events;
     }
 
-    @PreDestroy
     public void saveLog() {
-        System.out.println("PREDESTROY!!!");
+        System.out.println("SAVE LOG!!!");
+        if(events.isEmpty()) {
+            return;
+        }
+
         ChangeLogEvent changeLogEvent = events.get(0);
-
         events = changeLogEventRepository.save(events);
-
         ChangeLogTransaction changeLogTransaction = new ChangeLogTransaction();
+
         changeLogTransaction.description = String.format(
                 "Event: id=%s, name=%s",
                 changeLogEvent.id,
                 changeLogEvent.name);
         changeLogTransaction.events = events;
-        changeLogTransactionRepository.save(changeLogTransaction);
+        changeLogTransaction = changeLogTransactionRepository.save(changeLogTransaction);
+
+        System.out.println(changeLogTransaction);
     }
 }
