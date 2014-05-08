@@ -30,11 +30,30 @@ public class CompositeTest extends AbstractIntegrationTest {
 
         List<ChangeLogTransaction> transactions = transactionOperations.getAllTransactions();
         assertEquals(1, transactions.size());
-        assertEquals(1, transactions.get(0).events.size());
-        assertTrue(transactions.get(0).events.get(0) instanceof CreateEntityChangeLogEvent);
+        assertTransactionHasSingleCreateEntityEventForNote(transactions.get(0), "note1", "hello");
 
-        // TODO: create note #2
+        noteOperations.createNote("note2", "bye");
+
+        transactions = transactionOperations.getAllTransactions();
+        assertEquals(2, transactions.size());
+        assertTransactionHasSingleCreateEntityEventForNote(transactions.get(1), "note2", "bye");
+
         // TODO: update note #1
         // TODO: delete note #2
+    }
+
+    private static void assertTransactionHasSingleCreateEntityEventForNote(
+            ChangeLogTransaction transaction,
+            String id,
+            String text) {
+
+        assertEquals(1, transaction.events.size());
+        assertTrue(transaction.events.get(0) instanceof CreateEntityChangeLogEvent);
+
+        CreateEntityChangeLogEvent changeLogEvent = (CreateEntityChangeLogEvent)transaction.events.get(0);
+        assertEquals("me.loki2302.entities.Note", changeLogEvent.name);
+        assertEquals(id, changeLogEvent.id);
+        assertEquals("text", changeLogEvent.properties.get(0).name);
+        assertEquals(text, changeLogEvent.properties.get(0).value);
     }
 }

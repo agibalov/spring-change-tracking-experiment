@@ -14,5 +14,4 @@ public class Note {
     public String toString() {
         return String.format("Note(%s,%s)", id, text);
     }
-
 }

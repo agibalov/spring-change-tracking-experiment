@@ -13,6 +13,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -30,8 +31,7 @@ import java.sql.SQLException;
 @EntityScan(basePackages = "me.loki2302.entities")
 @EnableJpaRepositories(basePackages = "me.loki2302.entities")
 public class Config extends WebMvcConfigurerAdapter {
-    /*@Autowired
-    private ChangeLog changeLog;*/
+
 
     @Bean
     public ObjectMapper objectMapper() {
@@ -45,20 +45,31 @@ public class Config extends WebMvcConfigurerAdapter {
         return new EmbeddedDatabaseBuilder()
                 .setType(EmbeddedDatabaseType.HSQL)
                 .build();
-    }/*
+    }
+
+    /*@Bean
+    public MyHandlerInterceptorAdapter myHandlerInterceptorAdapter() {
+        return new MyHandlerInterceptorAdapter();
+    }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new HandlerInterceptorAdapter() {
-            @Override
-            public void postHandle(
-                    HttpServletRequest request,
-                    HttpServletResponse response,
-                    Object handler,
-                    ModelAndView modelAndView) throws Exception {
+        registry.addInterceptor(myHandlerInterceptorAdapter());
+    }
 
-                changeLog.saveLog();
-            }
-        });
+
+    private static class MyHandlerInterceptorAdapter extends HandlerInterceptorAdapter {
+        @Autowired
+        private ChangeLog changeLog;
+
+        @Override
+        public void postHandle(
+                HttpServletRequest request,
+                HttpServletResponse response,
+                Object handler,
+                ModelAndView modelAndView) throws Exception {
+
+            changeLog.saveLog();
+        }
     }*/
 }
