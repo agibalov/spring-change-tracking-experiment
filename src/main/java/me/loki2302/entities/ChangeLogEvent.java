@@ -23,8 +23,8 @@ import javax.persistence.*;
 public abstract class ChangeLogEvent {
     @Id
     @GeneratedValue
-    public Long idid;
+    public Long id;
 
-    public String id;
-    public String name;
+    public String entityId;
+    public String entityName;
 }

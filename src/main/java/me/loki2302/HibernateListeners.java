@@ -25,8 +25,8 @@ public class HibernateListeners implements PreInsertEventListener, PreUpdateEven
         String[] propertyNames = entityPersister.getPropertyNames();
 
         CreateEntityChangeLogEvent changeLogEvent = new CreateEntityChangeLogEvent();
-        changeLogEvent.name = event.getEntityName();
-        changeLogEvent.id = (String)event.getId();
+        changeLogEvent.entityName = event.getEntityName();
+        changeLogEvent.entityId = (String)event.getId();
         changeLogEvent.properties = makePropertyInfoList(propertyNames, event.getState());
         changeLog.append(changeLogEvent);
 
@@ -43,8 +43,8 @@ public class HibernateListeners implements PreInsertEventListener, PreUpdateEven
         String[] propertyNames = entityPersister.getPropertyNames();
 
         UpdateEntityChangeLogEvent changeLogEvent = new UpdateEntityChangeLogEvent();
-        changeLogEvent.name = event.getEntityName();
-        changeLogEvent.id = (String)event.getId();
+        changeLogEvent.entityName = event.getEntityName();
+        changeLogEvent.entityId = (String)event.getId();
         changeLogEvent.oldProperties = makePropertyInfoList(propertyNames, event.getOldState());
         changeLogEvent.properties = makePropertyInfoList(propertyNames, event.getState());
         changeLog.append(changeLogEvent);
@@ -59,8 +59,8 @@ public class HibernateListeners implements PreInsertEventListener, PreUpdateEven
         }
 
         DeleteEntityChangeLogEvent changeLogEvent = new DeleteEntityChangeLogEvent();
-        changeLogEvent.name = event.getEntityName();
-        changeLogEvent.id = (String)event.getId();
+        changeLogEvent.entityName = event.getEntityName();
+        changeLogEvent.entityId = (String)event.getId();
         changeLog.append(changeLogEvent);
         return false;
     }

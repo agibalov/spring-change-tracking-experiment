@@ -51,8 +51,8 @@ public class CompositeTest extends AbstractIntegrationTest {
         assertTrue(transaction.events.get(0) instanceof CreateEntityChangeLogEvent);
 
         CreateEntityChangeLogEvent changeLogEvent = (CreateEntityChangeLogEvent)transaction.events.get(0);
-        assertEquals("me.loki2302.entities.Note", changeLogEvent.name);
-        assertEquals(id, changeLogEvent.id);
+        assertEquals("me.loki2302.entities.Note", changeLogEvent.entityName);
+        assertEquals(id, changeLogEvent.entityId);
         assertEquals("text", changeLogEvent.properties.get(0).name);
         assertEquals(text, changeLogEvent.properties.get(0).value);
     }

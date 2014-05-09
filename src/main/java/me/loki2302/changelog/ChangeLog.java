@@ -43,8 +43,8 @@ public class ChangeLog {
 
         changeLogTransaction.description = String.format(
                 "Event: id=%s, name=%s",
-                changeLogEvent.id,
-                changeLogEvent.name);
+                changeLogEvent.entityId,
+                changeLogEvent.entityName);
         changeLogTransaction.events = events;
         changeLogTransaction = changeLogTransactionRepository.save(changeLogTransaction);
 
