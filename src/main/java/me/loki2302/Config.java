@@ -31,8 +31,6 @@ import java.sql.SQLException;
 @EntityScan(basePackages = "me.loki2302.entities")
 @EnableJpaRepositories(basePackages = "me.loki2302.entities")
 public class Config extends WebMvcConfigurerAdapter {
-
-
     @Bean
     public ObjectMapper objectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
@@ -56,7 +54,6 @@ public class Config extends WebMvcConfigurerAdapter {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(myHandlerInterceptorAdapter());
     }
-
 
     private static class MyHandlerInterceptorAdapter extends HandlerInterceptorAdapter {
         @Autowired
