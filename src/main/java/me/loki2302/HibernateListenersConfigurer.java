@@ -5,12 +5,12 @@ import org.hibernate.event.spi.EventType;
 import org.hibernate.internal.SessionFactoryImpl;
 import org.hibernate.jpa.HibernateEntityManagerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManagerFactory;
 
-@Service
+@Component
 public class HibernateListenersConfigurer {
     @Autowired
     private EntityManagerFactory entityManagerFactory;
@@ -20,8 +20,10 @@ public class HibernateListenersConfigurer {
 
     @PostConstruct
     public void init() {
-        HibernateEntityManagerFactory hibernateEntityManagerFactory = (HibernateEntityManagerFactory)entityManagerFactory;
-        SessionFactoryImpl sessionFactoryImpl = (SessionFactoryImpl)hibernateEntityManagerFactory.getSessionFactory();
+        HibernateEntityManagerFactory hibernateEntityManagerFactory =
+                (HibernateEntityManagerFactory)entityManagerFactory;
+        SessionFactoryImpl sessionFactoryImpl =
+                (SessionFactoryImpl)hibernateEntityManagerFactory.getSessionFactory();
         EventListenerRegistry eventListenerRegistry = sessionFactoryImpl.
                 getServiceRegistry().
                 getService(EventListenerRegistry.class);
