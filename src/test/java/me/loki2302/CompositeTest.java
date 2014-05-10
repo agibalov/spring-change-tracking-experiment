@@ -2,6 +2,7 @@ package me.loki2302;
 
 import me.loki2302.entities.ChangeLogTransaction;
 import me.loki2302.entities.CreateEntityChangeLogEvent;
+import me.loki2302.entities.DeleteEntityChangeLogEvent;
 import me.loki2302.entities.UpdateEntityChangeLogEvent;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,8 +46,11 @@ public class CompositeTest extends AbstractIntegrationTest {
         assertEquals(3, transactions.size());
         assertTransactionHasSingleUpdateEntityEventForNote(transactions.get(2), "note1", "hello", "omg");
 
+        noteOperations.deleteNote("note2");
 
-        // TODO: delete note #2
+        transactions = transactionOperations.getAllTransactions();
+        assertEquals(4, transactions.size());
+        assertTransactionHasSingleDeleteEntityEventForNote(transactions.get(3), "note2");
     }
 
     private static void assertTransactionHasSingleCreateEntityEventForNote(
@@ -80,5 +84,17 @@ public class CompositeTest extends AbstractIntegrationTest {
         assertEquals(newText, changeLogEvent.properties.get(0).value);
         assertEquals("text", changeLogEvent.oldProperties.get(0).name);
         assertEquals(oldText, changeLogEvent.oldProperties.get(0).value);
+    }
+
+    private static void assertTransactionHasSingleDeleteEntityEventForNote(
+            ChangeLogTransaction transaction,
+            String id) {
+
+        assertEquals(1, transaction.events.size());
+        assertTrue(transaction.events.get(0) instanceof DeleteEntityChangeLogEvent);
+
+        DeleteEntityChangeLogEvent changeLogEvent = (DeleteEntityChangeLogEvent)transaction.events.get(0);
+        assertEquals("me.loki2302.entities.Note", changeLogEvent.entityName);
+        assertEquals(id, changeLogEvent.entityId);
     }
 }
