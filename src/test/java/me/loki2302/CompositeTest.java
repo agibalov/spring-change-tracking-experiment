@@ -28,19 +28,19 @@ public class CompositeTest extends AbstractIntegrationTest {
     public void dummy() {
         assertTrue(transactionOperations.getAllTransactions().isEmpty());
 
-        noteOperations.createNote("note1", "hello");
+        noteOperations.putNote("note1", "hello");
 
         List<ChangeLogTransaction> transactions = transactionOperations.getAllTransactions();
         assertEquals(1, transactions.size());
         assertTransactionHasSingleCreateEntityEventForNote(transactions.get(0), "note1", "hello");
 
-        noteOperations.createNote("note2", "bye");
+        noteOperations.putNote("note2", "bye");
 
         transactions = transactionOperations.getAllTransactions();
         assertEquals(2, transactions.size());
         assertTransactionHasSingleCreateEntityEventForNote(transactions.get(1), "note2", "bye");
 
-        noteOperations.updateNote("note1", "omg");
+        noteOperations.putNote("note1", "omg");
 
         transactions = transactionOperations.getAllTransactions();
         assertEquals(3, transactions.size());

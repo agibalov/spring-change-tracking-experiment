@@ -30,28 +30,15 @@ public class NoteTest extends AbstractIntegrationTest {
     @Test
     @DirtiesContext
     public void canCreateNote() {
-        NoteDto noteDto = noteOperations.createNote("note1", "hi");
+        NoteDto noteDto = noteOperations.putNote("note1", "hi");
         assertEquals("note1", noteDto.id);
         assertEquals("hi", noteDto.text);
     }
 
     @Test
     @DirtiesContext
-    public void cantCreateNoteWithTheSameId() {
-        noteOperations.createNote("note1", "hi");
-
-        try {
-            noteOperations.createNote("note1", "hi");
-            fail();
-        } catch(HttpClientErrorException e) {
-            assertEquals(HttpStatus.CONFLICT, e.getStatusCode());
-        }
-    }
-
-    @Test
-    @DirtiesContext
     public void canGetNote() {
-        noteOperations.createNote("note1", "hi");
+        noteOperations.putNote("note1", "hi");
         NoteDto noteDto = noteOperations.getNote("note1");
         assertEquals("note1", noteDto.id);
         assertEquals("hi", noteDto.text);
@@ -60,8 +47,8 @@ public class NoteTest extends AbstractIntegrationTest {
     @Test
     @DirtiesContext
     public void canGetAllNotes() {
-        noteOperations.createNote("note1", "hi");
-        noteOperations.createNote("note2", "bye");
+        noteOperations.putNote("note1", "hi");
+        noteOperations.putNote("note2", "bye");
 
         List<NoteDto> notes = noteOperations.getAllNotes();
         assertEquals(2, notes.size());
@@ -72,7 +59,7 @@ public class NoteTest extends AbstractIntegrationTest {
     @Test
     @DirtiesContext
     public void canDeleteNote() {
-        noteOperations.createNote("note1", "hi");
+        noteOperations.putNote("note1", "hi");
         noteOperations.deleteNote("note1");
 
         try {
@@ -86,8 +73,8 @@ public class NoteTest extends AbstractIntegrationTest {
     @Test
     @DirtiesContext
     public void canUpdateNote() {
-        noteOperations.createNote("note1", "hi");
-        noteOperations.updateNote("note1", "bye");
+        noteOperations.putNote("note1", "hi");
+        noteOperations.putNote("note1", "bye");
         NoteDto note = noteOperations.getNote("note1");
         assertEquals("bye", note.text);
     }

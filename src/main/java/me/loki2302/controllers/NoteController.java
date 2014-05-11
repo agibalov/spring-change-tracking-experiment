@@ -42,47 +42,24 @@ public class NoteController {
         return new ResponseEntity<NoteDto>(noteDto, HttpStatus.OK);
     }
 
-    // TODO: remove this method, move functionality to PUT handler
-    @RequestMapping(value = "/{id}", method = RequestMethod.POST)
-    public Object createNote(
-            @PathVariable String id,
-            @RequestBody @Valid NoteFieldsDto noteFieldsDto) {
-
-        Note existingNote = noteRepository.findOne(id);
-        if(existingNote != null) {
-            ErrorDto errorDto = new ErrorDto();
-            errorDto.message = "Note already exists";
-            return new ResponseEntity<ErrorDto>(errorDto, HttpStatus.CONFLICT);
-        }
-
-        Note note = new Note();
-        note.id = id;
-        note.text = noteFieldsDto.text;
-        note = noteRepository.save(note);
-
-        NoteDto noteDto = noteMapper.makeNoteDto(note);
-
-        return new ResponseEntity<NoteDto>(noteDto, HttpStatus.CREATED);
-    }
-
-    // TODO: make this behave as "update or create"
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
-    public Object updateNote(
+    public Object createOrUpdateNote(
             @PathVariable String id,
             @RequestBody @Valid NoteFieldsDto noteFieldsDto) {
 
         Note note = noteRepository.findOne(id);
+        boolean hasCreatedNew = false;
         if (note == null) {
-            ErrorDto errorDto = new ErrorDto();
-            errorDto.message = "No such note";
-            return new ResponseEntity<ErrorDto>(errorDto, HttpStatus.NOT_FOUND);
+            note = new Note();
+            note.id = id;
+            hasCreatedNew = true;
         }
 
         note.text = noteFieldsDto.text;
         note = noteRepository.save(note);
 
         NoteDto noteDto = noteMapper.makeNoteDto(note);
-        return new ResponseEntity<NoteDto>(noteDto, HttpStatus.OK);
+        return new ResponseEntity<NoteDto>(noteDto, hasCreatedNew ? HttpStatus.CREATED : HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)

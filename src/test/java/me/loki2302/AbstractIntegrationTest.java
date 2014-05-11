@@ -4,6 +4,8 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.web.client.RestTemplate;
@@ -17,6 +19,7 @@ public abstract class AbstractIntegrationTest {
 
     @Before
     public void createRestTemplate() {
-        restTemplate = new RestTemplate();
+        ClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+        restTemplate = new RestTemplate(requestFactory);
     }
 }

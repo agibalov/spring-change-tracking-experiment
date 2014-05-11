@@ -18,18 +18,6 @@ public class NoteOperations {
         this.restTemplate = restTemplate;
     }
 
-    public NoteDto createNote(String id, String text) {
-        NoteFieldsDto noteFieldsDto = new NoteFieldsDto();
-        noteFieldsDto.text = text;
-
-        NoteDto noteDto = restTemplate.postForObject(
-                buildUri("notes/{id}", id),
-                noteFieldsDto,
-                NoteDto.class);
-
-        return noteDto;
-    }
-
     public NoteDto getNote(String id) {
         return restTemplate.getForObject(buildUri("notes/{id}", id), NoteDto.class);
     }
@@ -44,7 +32,7 @@ public class NoteOperations {
         return responseEntity.getBody();
     }
 
-    public NoteDto updateNote(String id, String text) {
+    public NoteDto putNote(String id, String text) {
         NoteFieldsDto noteFieldsDto = new NoteFieldsDto();
         noteFieldsDto.text = text;
 
