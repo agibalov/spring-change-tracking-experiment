@@ -8,9 +8,8 @@ public class ChangeLogTransaction {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     public Long id;
-    public String description;
 
     @Lob
+    @Column(length = 1024 * 1024)
     public String changeLogEventsJson;
-
 }

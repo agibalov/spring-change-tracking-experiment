@@ -11,6 +11,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class CompositeTest extends AbstractIntegrationTest {
@@ -64,8 +65,9 @@ public class CompositeTest extends AbstractIntegrationTest {
         CreateEntityChangeLogEvent changeLogEvent = (CreateEntityChangeLogEvent)transaction.events.get(0);
         assertEquals("me.loki2302.entities.Note", changeLogEvent.entityName);
         assertEquals(id, changeLogEvent.entityId);
-        assertEquals("text", changeLogEvent.properties.get(0).name);
-        assertEquals(text, changeLogEvent.properties.get(0).value);
+        assertEquals(2, changeLogEvent.properties.size());
+        assertEquals(text, changeLogEvent.properties.get("text"));
+        assertTrue(changeLogEvent.properties.containsKey("text2"));
     }
 
     private static void assertTransactionHasSingleUpdateEntityEventForNote(
@@ -80,10 +82,12 @@ public class CompositeTest extends AbstractIntegrationTest {
         UpdateEntityChangeLogEvent changeLogEvent = (UpdateEntityChangeLogEvent)transaction.events.get(0);
         assertEquals("me.loki2302.entities.Note", changeLogEvent.entityName);
         assertEquals(id, changeLogEvent.entityId);
-        assertEquals("text", changeLogEvent.properties.get(0).name);
-        assertEquals(newText, changeLogEvent.properties.get(0).value);
-        assertEquals("text", changeLogEvent.oldProperties.get(0).name);
-        assertEquals(oldText, changeLogEvent.oldProperties.get(0).value);
+        assertEquals(2, changeLogEvent.properties.size());
+        assertEquals(newText, changeLogEvent.properties.get("text"));
+        assertNull(changeLogEvent.properties.get("text2"));
+        assertEquals(2, changeLogEvent.oldProperties.size());
+        assertEquals(oldText, changeLogEvent.oldProperties.get("text"));
+        assertNull(changeLogEvent.oldProperties.get("text2"));
     }
 
     private static void assertTransactionHasSingleDeleteEntityEventForNote(

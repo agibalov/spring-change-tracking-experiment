@@ -1,8 +1,8 @@
 package me.loki2302.changelog;
 
-import java.util.List;
+import java.util.Map;
 
 public class UpdateEntityChangeLogEvent extends ChangeLogEvent {
-    public List<PropertyInfo> oldProperties;
-    public List<PropertyInfo> properties;
+    public Map<String, Object> oldProperties;
+    public Map<String, Object> properties;
 }

@@ -1,14 +1,17 @@
 package me.loki2302;
 
-import me.loki2302.changelog.*;
-import me.loki2302.entities.*;
+import me.loki2302.changelog.ChangeLog;
+import me.loki2302.changelog.CreateEntityChangeLogEvent;
+import me.loki2302.changelog.DeleteEntityChangeLogEvent;
+import me.loki2302.changelog.UpdateEntityChangeLogEvent;
+import me.loki2302.entities.Note;
 import org.hibernate.event.spi.*;
 import org.hibernate.persister.entity.EntityPersister;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class HibernateListeners implements PreInsertEventListener, PreUpdateEventListener, PreDeleteEventListener {
@@ -27,7 +30,7 @@ public class HibernateListeners implements PreInsertEventListener, PreUpdateEven
         CreateEntityChangeLogEvent changeLogEvent = new CreateEntityChangeLogEvent();
         changeLogEvent.entityName = event.getEntityName();
         changeLogEvent.entityId = (String)event.getId();
-        changeLogEvent.properties = makePropertyInfoList(propertyNames, event.getState());
+        changeLogEvent.properties = makePropertyMap(propertyNames, event.getState());
         changeLog.append(changeLogEvent);
 
         return false;
@@ -45,8 +48,8 @@ public class HibernateListeners implements PreInsertEventListener, PreUpdateEven
         UpdateEntityChangeLogEvent changeLogEvent = new UpdateEntityChangeLogEvent();
         changeLogEvent.entityName = event.getEntityName();
         changeLogEvent.entityId = (String)event.getId();
-        changeLogEvent.oldProperties = makePropertyInfoList(propertyNames, event.getOldState());
-        changeLogEvent.properties = makePropertyInfoList(propertyNames, event.getState());
+        changeLogEvent.oldProperties = makePropertyMap(propertyNames, event.getOldState());
+        changeLogEvent.properties = makePropertyMap(propertyNames, event.getState());
         changeLog.append(changeLogEvent);
 
         return false;
@@ -62,18 +65,18 @@ public class HibernateListeners implements PreInsertEventListener, PreUpdateEven
         changeLogEvent.entityName = event.getEntityName();
         changeLogEvent.entityId = (String)event.getId();
         changeLog.append(changeLogEvent);
+
         return false;
     }
 
-    private static List<PropertyInfo> makePropertyInfoList(String[] propertyNames, Object[] propertyValues) {
-        List<PropertyInfo> propertyInfoList = new ArrayList<PropertyInfo>();
+    private static Map<String, Object> makePropertyMap(String[] propertyNames, Object[] propertyValues) {
+        Map<String, Object> propertyMap = new HashMap<String, Object>();
         for(int i = 0; i < propertyNames.length; ++i) {
-            PropertyInfo propertyInfo = new PropertyInfo();
-            propertyInfo.name = propertyNames[i];
-            propertyInfo.value = String.valueOf(propertyValues[i]);
-            propertyInfoList.add(propertyInfo);
+            String propertyName = propertyNames[i];
+            Object propertyValue = propertyValues[i];
+            propertyMap.put(propertyName, propertyValue);
         }
-        return propertyInfoList;
+        return propertyMap;
     }
 
     private static boolean shouldProcessEntity(Object entity) {
