@@ -1,7 +1,8 @@
 package me.loki2302.changelog;
 
-import me.loki2302.entities.ChangeLogEvent;
-import me.loki2302.entities.ChangeLogEventRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import me.loki2302.entities.ChangeLogTransaction;
 import me.loki2302.entities.ChangeLogTransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +22,10 @@ public class ChangeLog {
     private ChangeLogTransactionRepository changeLogTransactionRepository;
 
     @Autowired
-    private ChangeLogEventRepository changeLogEventRepository;
+    private ObjectMapper objectMapper;
 
     public void append(ChangeLogEvent changeLogEvent) {
         events.add(changeLogEvent);
-    }
-
-    public List<ChangeLogEvent> getEvents() {
-        return events;
     }
 
     public void saveLog() {
@@ -37,17 +34,17 @@ public class ChangeLog {
             return;
         }
 
-        ChangeLogEvent changeLogEvent = events.get(0);
-        events = changeLogEventRepository.save(events);
+        String eventsJson;
+        try {
+            eventsJson = objectMapper
+                    .writerWithType(new TypeReference<List<ChangeLogEvent>>() {})
+                    .writeValueAsString(events);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+
         ChangeLogTransaction changeLogTransaction = new ChangeLogTransaction();
-
-        changeLogTransaction.description = String.format(
-                "Event: id=%s, name=%s",
-                changeLogEvent.entityId,
-                changeLogEvent.entityName);
-        changeLogTransaction.events = events;
-        changeLogTransaction = changeLogTransactionRepository.save(changeLogTransaction);
-
-        System.out.println(changeLogTransaction);
+        changeLogTransaction.changeLogEventsJson = eventsJson;
+        changeLogTransactionRepository.save(changeLogTransaction);
     }
 }

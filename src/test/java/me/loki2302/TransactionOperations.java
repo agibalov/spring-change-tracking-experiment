@@ -1,6 +1,6 @@
 package me.loki2302;
 
-import me.loki2302.entities.ChangeLogTransaction;
+import me.loki2302.dto.ChangeLogTransactionDto;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -17,32 +17,36 @@ public class TransactionOperations {
         this.restTemplate = restTemplate;
     }
 
-    public List<ChangeLogTransaction> getAllTransactions() {
-        ResponseEntity<List<ChangeLogTransaction>> responseEntity = restTemplate.exchange(
+    public List<ChangeLogTransactionDto> getAllTransactions() {
+        ResponseEntity<List<ChangeLogTransactionDto>> responseEntity = restTemplate.exchange(
                 buildUri("/transactions"),
                 HttpMethod.GET,
                 HttpEntity.EMPTY,
-                new ParameterizedTypeReference<List<ChangeLogTransaction>>() {});
+                new ParameterizedTypeReference<List<ChangeLogTransactionDto>>() {});
 
         return responseEntity.getBody();
     }
 
-    public List<ChangeLogTransaction> getTransactionsAfter(String firstTransactionId) {
-        ResponseEntity<List<ChangeLogTransaction>> responseEntity = restTemplate.exchange(
+    public List<ChangeLogTransactionDto> getTransactionsAfter(String firstTransactionId) {
+        ResponseEntity<List<ChangeLogTransactionDto>> responseEntity = restTemplate.exchange(
                 buildUri("/transactions/after/{id}", firstTransactionId),
                 HttpMethod.GET,
                 HttpEntity.EMPTY,
-                new ParameterizedTypeReference<List<ChangeLogTransaction>>() {});
+                new ParameterizedTypeReference<List<ChangeLogTransactionDto>>() {});
 
         return responseEntity.getBody();
     }
 
-    public ChangeLogTransaction getFirstTransaction() {
-        return restTemplate.getForObject(buildUri("/transactions/first"), ChangeLogTransaction.class);
+    public ChangeLogTransactionDto getFirstTransaction() {
+        return restTemplate.getForObject(
+                buildUri("/transactions/first"),
+                ChangeLogTransactionDto.class);
     }
 
-    public ChangeLogTransaction getLastTransaction() {
-        return restTemplate.getForObject(buildUri("/transactions/last"), ChangeLogTransaction.class);
+    public ChangeLogTransactionDto getLastTransaction() {
+        return restTemplate.getForObject(
+                buildUri("/transactions/last"),
+                ChangeLogTransactionDto.class);
     }
 
     private static String buildUri(String path, Object... vars) {

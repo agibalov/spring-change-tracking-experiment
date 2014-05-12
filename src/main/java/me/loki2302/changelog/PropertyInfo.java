@@ -1,8 +1,5 @@
-package me.loki2302.entities;
+package me.loki2302.changelog;
 
-import javax.persistence.Embeddable;
-
-@Embeddable
 public class PropertyInfo {
     public String name;
     public String value;

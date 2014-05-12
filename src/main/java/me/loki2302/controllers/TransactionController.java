@@ -1,5 +1,6 @@
 package me.loki2302.controllers;
 
+import me.loki2302.dto.ChangeLogTransactionDto;
 import me.loki2302.entities.ChangeLogTransaction;
 import me.loki2302.entities.ChangeLogTransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class TransactionController {
     @Autowired
     private ChangeLogTransactionRepository changeLogTransactionRepository;
 
+    @Autowired
+    private TransactionMapper transactionMapper;
+
     @RequestMapping(value = "/first")
     public Object getFirstTransaction() {
         Page<ChangeLogTransaction> changeLogTransactions =
@@ -30,7 +34,8 @@ public class TransactionController {
         }
 
         ChangeLogTransaction first = changeLogTransactions.getContent().get(0);
-        return new ResponseEntity<ChangeLogTransaction>(first, HttpStatus.OK);
+        ChangeLogTransactionDto dto = transactionMapper.makeChangeLogTransactionDto(first);
+        return new ResponseEntity<ChangeLogTransactionDto>(dto, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/last")
@@ -41,18 +46,22 @@ public class TransactionController {
             return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
         }
 
-        ChangeLogTransaction first = changeLogTransactions.getContent().get(0);
-        return new ResponseEntity<ChangeLogTransaction>(first, HttpStatus.OK);
+        ChangeLogTransaction last = changeLogTransactions.getContent().get(0);
+        ChangeLogTransactionDto dto = transactionMapper.makeChangeLogTransactionDto(last);
+        return new ResponseEntity<ChangeLogTransactionDto>(dto, HttpStatus.OK);
     }
 
     @RequestMapping(value = "/after/{firstId}")
     public Object getTransactionsAfter(@PathVariable long firstId) {
         List<ChangeLogTransaction> transactions = changeLogTransactionRepository.findByIdGreaterThan(firstId);
-        return transactions;
+        List<ChangeLogTransactionDto> dtos = transactionMapper.makeChangeLogTransactionDtos(transactions);
+        return dtos;
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public List<ChangeLogTransaction> getAllTransactions() {
-        return changeLogTransactionRepository.findAll();
+    public List<ChangeLogTransactionDto> getAllTransactions() {
+        List<ChangeLogTransaction> transactions = changeLogTransactionRepository.findAll();
+        List<ChangeLogTransactionDto> dtos = transactionMapper.makeChangeLogTransactionDtos(transactions);
+        return dtos;
     }
 }

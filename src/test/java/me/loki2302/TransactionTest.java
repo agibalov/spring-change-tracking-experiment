@@ -1,6 +1,6 @@
 package me.loki2302;
 
-import me.loki2302.entities.ChangeLogTransaction;
+import me.loki2302.dto.ChangeLogTransactionDto;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.http.HttpStatus;
@@ -20,7 +20,8 @@ public class TransactionTest extends AbstractIntegrationTest {
 
     @Test
     public void thereAreNoTransactionsByDefault() {
-        List<ChangeLogTransaction> transactions = transactionOperations.getAllTransactions();
+        List<ChangeLogTransactionDto> transactions =
+                transactionOperations.getAllTransactions();
         assertTrue(transactions.isEmpty());
 
         try {

@@ -1,9 +1,9 @@
 package me.loki2302;
 
-import me.loki2302.entities.ChangeLogTransaction;
-import me.loki2302.entities.CreateEntityChangeLogEvent;
-import me.loki2302.entities.DeleteEntityChangeLogEvent;
-import me.loki2302.entities.UpdateEntityChangeLogEvent;
+import me.loki2302.changelog.CreateEntityChangeLogEvent;
+import me.loki2302.changelog.DeleteEntityChangeLogEvent;
+import me.loki2302.changelog.UpdateEntityChangeLogEvent;
+import me.loki2302.dto.ChangeLogTransactionDto;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.test.annotation.DirtiesContext;
@@ -30,7 +30,7 @@ public class CompositeTest extends AbstractIntegrationTest {
 
         noteOperations.putNote("note1", "hello");
 
-        List<ChangeLogTransaction> transactions = transactionOperations.getAllTransactions();
+        List<ChangeLogTransactionDto> transactions = transactionOperations.getAllTransactions();
         assertEquals(1, transactions.size());
         assertTransactionHasSingleCreateEntityEventForNote(transactions.get(0), "note1", "hello");
 
@@ -54,7 +54,7 @@ public class CompositeTest extends AbstractIntegrationTest {
     }
 
     private static void assertTransactionHasSingleCreateEntityEventForNote(
-            ChangeLogTransaction transaction,
+            ChangeLogTransactionDto transaction,
             String id,
             String text) {
 
@@ -69,7 +69,7 @@ public class CompositeTest extends AbstractIntegrationTest {
     }
 
     private static void assertTransactionHasSingleUpdateEntityEventForNote(
-            ChangeLogTransaction transaction,
+            ChangeLogTransactionDto transaction,
             String id,
             String oldText,
             String newText) {
@@ -87,7 +87,7 @@ public class CompositeTest extends AbstractIntegrationTest {
     }
 
     private static void assertTransactionHasSingleDeleteEntityEventForNote(
-            ChangeLogTransaction transaction,
+            ChangeLogTransactionDto transaction,
             String id) {
 
         assertEquals(1, transaction.events.size());

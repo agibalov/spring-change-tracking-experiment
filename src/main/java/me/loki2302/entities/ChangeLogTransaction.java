@@ -10,6 +10,7 @@ public class ChangeLogTransaction {
     public Long id;
     public String description;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    public List<ChangeLogEvent> events;
+    @Lob
+    public String changeLogEventsJson;
+
 }

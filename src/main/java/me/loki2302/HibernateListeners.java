@@ -1,6 +1,6 @@
 package me.loki2302;
 
-import me.loki2302.changelog.ChangeLog;
+import me.loki2302.changelog.*;
 import me.loki2302.entities.*;
 import org.hibernate.event.spi.*;
 import org.hibernate.persister.entity.EntityPersister;

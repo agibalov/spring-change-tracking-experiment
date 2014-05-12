@@ -26,7 +26,6 @@ public class ExceptionHandlerControllerAdvice {
             errorsMap.put(fieldName, message);
         }
 
-        System.out.println("VALIDATION ERROR!");
         return errorsMap;
     }
 }
