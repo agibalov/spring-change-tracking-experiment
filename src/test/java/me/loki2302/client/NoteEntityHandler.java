@@ -6,25 +6,25 @@ import me.loki2302.changelog.UpdateEntityChangeLogEvent;
 
 public class NoteEntityHandler implements EntityHandler {
     @Override
-    public void handleCreateEntityChangeLogEvent(LocalRepository<LocalNote> noteRepository, CreateEntityChangeLogEvent event) {
+    public void handleCreateEntityChangeLogEvent(NoteDataContext noteDataContext, CreateEntityChangeLogEvent event) {
         LocalNote note = new LocalNote();
         note.id = event.entityId;
         note.text = (String)event.properties.get("text");
         note.text2 = (String)event.properties.get("text2");
-        noteRepository.save(note);
+        noteDataContext.noteRepository.save(note);
     }
 
     @Override
-    public void handleUpdateEntityChangeLogEvent(LocalRepository<LocalNote> noteRepository, UpdateEntityChangeLogEvent event) {
+    public void handleUpdateEntityChangeLogEvent(NoteDataContext noteDataContext, UpdateEntityChangeLogEvent event) {
         LocalNote note = new LocalNote();
         note.id = event.entityId;
         note.text = (String)event.properties.get("text");
         note.text2 = (String)event.properties.get("text2");
-        noteRepository.save(note);
+        noteDataContext.noteRepository.save(note);
     }
 
     @Override
-    public void handleDeleteEntityChangeLogEvent(LocalRepository<LocalNote> noteRepository, DeleteEntityChangeLogEvent event) {
-        noteRepository.delete(event.entityId);
+    public void handleDeleteEntityChangeLogEvent(NoteDataContext noteDataContext, DeleteEntityChangeLogEvent event) {
+        noteDataContext.noteRepository.delete(event.entityId);
     }
 }

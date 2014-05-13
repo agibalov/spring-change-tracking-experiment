@@ -8,7 +8,7 @@ import me.loki2302.changelog.UpdateEntityChangeLogEvent;
 import java.util.HashMap;
 import java.util.Map;
 
-class EntityHandlerRegistry {
+public class EntityHandlerRegistry {
     private final Map<String, EntityHandler> entityHandlers = new HashMap<String, EntityHandler>();
 
     public void register(String entityName, EntityHandler entityHandler) {
@@ -19,7 +19,7 @@ class EntityHandlerRegistry {
         entityHandlers.put(entityName, entityHandler);
     }
 
-    public void handle(LocalRepository<LocalNote> noteRepository, ChangeLogEvent event) {
+    public void handle(NoteDataContext noteDataContext, ChangeLogEvent event) {
         String entityName = event.entityName;
         EntityHandler entityHandler = entityHandlers.get(entityName);
         if(entityHandler == null) {
@@ -28,13 +28,13 @@ class EntityHandlerRegistry {
 
         if(event instanceof CreateEntityChangeLogEvent) {
             CreateEntityChangeLogEvent e = (CreateEntityChangeLogEvent)event;
-            entityHandler.handleCreateEntityChangeLogEvent(noteRepository, e);
+            entityHandler.handleCreateEntityChangeLogEvent(noteDataContext, e);
         } else if(event instanceof UpdateEntityChangeLogEvent) {
             UpdateEntityChangeLogEvent e = (UpdateEntityChangeLogEvent)event;
-            entityHandler.handleUpdateEntityChangeLogEvent(noteRepository, e);
+            entityHandler.handleUpdateEntityChangeLogEvent(noteDataContext, e);
         } else if(event instanceof DeleteEntityChangeLogEvent) {
             DeleteEntityChangeLogEvent e = (DeleteEntityChangeLogEvent)event;
-            entityHandler.handleDeleteEntityChangeLogEvent(noteRepository, e);
+            entityHandler.handleDeleteEntityChangeLogEvent(noteDataContext, e);
         } else {
             throw new RuntimeException("Unknown event type " + event.getClass());
         }

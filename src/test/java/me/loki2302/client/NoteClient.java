@@ -12,7 +12,7 @@ import java.util.*;
 
 public class NoteClient {
     private final Queue<ApiCommand> commandQueue = new LinkedList<ApiCommand>();
-    private final LocalRepository<LocalNote> noteRepository = new LocalRepository<LocalNote>();
+    private final NoteDataContext noteDataContext = new NoteDataContext();
     private final EntityHandlerRegistry entityHandlerRegistry;
     private final NoteOperations noteOperations;
     private final TransactionOperations transactionOperations;
@@ -36,7 +36,7 @@ public class NoteClient {
         List<ChangeLogTransactionDto> transactions = transactionOperations.getAllTransactions();
         for(ChangeLogTransactionDto transaction : transactions) {
             for(ChangeLogEvent event : transaction.events) {
-                entityHandlerRegistry.handle(noteRepository, event);
+                entityHandlerRegistry.handle(noteDataContext, event);
             }
         }
     }
@@ -47,22 +47,22 @@ public class NoteClient {
         command.text = text;
         command.text2 = text2;
         commandQueue.add(command);
-        return command.applyLocally(noteRepository);
+        return command.applyLocally(noteDataContext);
     }
 
     public void deleteNote(String id) {
         DeleteNoteCommand command = new DeleteNoteCommand();
         command.id = id;
         commandQueue.add(command);
-        command.applyLocally(noteRepository);
+        command.applyLocally(noteDataContext);
     }
 
     public List<LocalNote> getAllNotes() {
-        return noteRepository.findAll();
+        return noteDataContext.noteRepository.findAll();
     }
 
     public LocalNote getNote(String id) {
-        LocalNote note = noteRepository.findOne(id);
+        LocalNote note = noteDataContext.noteRepository.findOne(id);
         if(note == null) {
             throw new RuntimeException("LocalNote doesn't exist");
         }
