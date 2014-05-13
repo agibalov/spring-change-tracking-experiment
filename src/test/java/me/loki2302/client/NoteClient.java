@@ -33,12 +33,26 @@ public class NoteClient {
     }
 
     public void retrieveChanges() {
-        List<ChangeLogTransactionDto> transactions = transactionOperations.getAllTransactions();
-        for(ChangeLogTransactionDto transaction : transactions) {
-            for(ChangeLogEvent event : transaction.events) {
+        Long currentRevision = noteDataContext.revision;
+
+        List<ChangeLogTransactionDto> transactions;
+        if(currentRevision == null) {
+            transactions = transactionOperations.getAllTransactions();
+        } else {
+            transactions = transactionOperations.getTransactionsAfter(currentRevision);
+        }
+
+        for (ChangeLogTransactionDto transaction : transactions) {
+            for (ChangeLogEvent event : transaction.events) {
                 entityHandlerRegistry.handleChangeLogEvent(noteDataContext, event);
             }
+
+            noteDataContext.revision = transaction.id;
         }
+    }
+
+    public Long getCurrentRevision() {
+        return noteDataContext.revision;
     }
 
     public LocalNote saveNote(String id, String text, String text2) {

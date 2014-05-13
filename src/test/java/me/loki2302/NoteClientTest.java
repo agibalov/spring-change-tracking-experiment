@@ -12,16 +12,24 @@ import org.springframework.test.annotation.DirtiesContext;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class NoteClientTest extends AbstractIntegrationTest {
     private NoteOperations noteOperations;
     private TransactionOperations transactionOperations;
+    private NoteClient noteClient;
 
     @Before
-    public void createNoteOperations() {
+    public void createNoteClient() {
         noteOperations = new NoteOperations(restTemplate);
         transactionOperations = new TransactionOperations(restTemplate);
+        noteClient = new NoteClient(noteOperations, transactionOperations);
+    }
+
+    @Test
+    public void noteClientIsAtNullRevisionByDefault() {
+        assertNull(noteClient.getCurrentRevision());
     }
 
     @Test
@@ -29,7 +37,6 @@ public class NoteClientTest extends AbstractIntegrationTest {
     public void canSendLocalChanges() {
         assertTrue(noteOperations.getAllNotes().isEmpty());
 
-        NoteClient noteClient = new NoteClient(noteOperations, transactionOperations);
         noteClient.saveNote("note1", "hello", null);
         noteClient.sendChanges();
 
@@ -45,7 +52,6 @@ public class NoteClientTest extends AbstractIntegrationTest {
     public void canRetrieveRemoteChanges() {
         noteOperations.putNote("note1", "hello");
 
-        NoteClient noteClient = new NoteClient(noteOperations, transactionOperations);
         assertTrue(noteClient.getAllNotes().isEmpty());
         noteClient.retrieveChanges();
 

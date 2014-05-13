@@ -27,7 +27,7 @@ public class TransactionOperations {
         return responseEntity.getBody();
     }
 
-    public List<ChangeLogTransactionDto> getTransactionsAfter(String firstTransactionId) {
+    public List<ChangeLogTransactionDto> getTransactionsAfter(long firstTransactionId) {
         ResponseEntity<List<ChangeLogTransactionDto>> responseEntity = restTemplate.exchange(
                 buildUri("/transactions/after/{id}", firstTransactionId),
                 HttpMethod.GET,
