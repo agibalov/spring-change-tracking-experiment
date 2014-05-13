@@ -3,28 +3,26 @@ package me.loki2302.client;
 import me.loki2302.client.api.NoteOperations;
 import me.loki2302.client.api.TransactionOperations;
 import me.loki2302.changelog.ChangeLogEvent;
-import me.loki2302.changelog.CreateEntityChangeLogEvent;
-import me.loki2302.changelog.DeleteEntityChangeLogEvent;
-import me.loki2302.changelog.UpdateEntityChangeLogEvent;
 import me.loki2302.client.commands.ApiCommand;
 import me.loki2302.client.commands.DeleteNoteCommand;
 import me.loki2302.client.commands.SaveNoteCommand;
 import me.loki2302.dto.ChangeLogTransactionDto;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 public class NoteClient {
     private final Queue<ApiCommand> commandQueue = new LinkedList<ApiCommand>();
     private final LocalRepository<LocalNote> noteRepository = new LocalRepository<LocalNote>();
-    private final EntityHandler noteEntityHandler = new NoteEntityHandler();
+    private final EntityHandlerRegistry entityHandlerRegistry;
     private final NoteOperations noteOperations;
     private final TransactionOperations transactionOperations;
 
     public NoteClient(NoteOperations noteOperations, TransactionOperations transactionOperations) {
         this.noteOperations = noteOperations;
         this.transactionOperations = transactionOperations;
+
+        entityHandlerRegistry = new EntityHandlerRegistry();
+        entityHandlerRegistry.register("me.loki2302.entities.Note", new NoteEntityHandler());
     }
 
     public void sendChanges() {
@@ -38,33 +36,7 @@ public class NoteClient {
         List<ChangeLogTransactionDto> transactions = transactionOperations.getAllTransactions();
         for(ChangeLogTransactionDto transaction : transactions) {
             for(ChangeLogEvent event : transaction.events) {
-                if(event instanceof CreateEntityChangeLogEvent) {
-                    CreateEntityChangeLogEvent e = (CreateEntityChangeLogEvent)event;
-                    String entityName = e.entityName;
-                    if(entityName.equals("me.loki2302.entities.Note")) {
-                        noteEntityHandler.handleCreateEntityChangeLogEvent(noteRepository, e);
-                    } else {
-                        throw new RuntimeException("Unknown entity name " + entityName);
-                    }
-                } else if(event instanceof UpdateEntityChangeLogEvent) {
-                    UpdateEntityChangeLogEvent e = (UpdateEntityChangeLogEvent)event;
-                    String entityName = e.entityName;
-                    if(entityName.equals("me.loki2302.entities.Note")) {
-                        noteEntityHandler.handleUpdateEntityChangeLogEvent(noteRepository, e);
-                    } else {
-                        throw new RuntimeException("Unknown entity name " + entityName);
-                    }
-                } else if(event instanceof DeleteEntityChangeLogEvent) {
-                    DeleteEntityChangeLogEvent e = (DeleteEntityChangeLogEvent)event;
-                    String entityName = e.entityName;
-                    if(entityName.equals("me.loki2302.entities.Note")) {
-                        noteEntityHandler.handleDeleteEntityChangeLogEvent(noteRepository, e);
-                    } else {
-                        throw new RuntimeException("Unknown entity name " + entityName);
-                    }
-                } else {
-                    throw new RuntimeException("Unknown event type " + event.getClass());
-                }
+                entityHandlerRegistry.handle(noteRepository, event);
             }
         }
     }
