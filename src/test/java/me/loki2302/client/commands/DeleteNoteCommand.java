@@ -1,6 +1,8 @@
-package me.loki2302.client;
+package me.loki2302.client.commands;
 
 import me.loki2302.NoteOperations;
+import me.loki2302.client.LocalNote;
+import me.loki2302.client.LocalRepository;
 
 public class DeleteNoteCommand implements ApiCommand<Void> {
     public String id;

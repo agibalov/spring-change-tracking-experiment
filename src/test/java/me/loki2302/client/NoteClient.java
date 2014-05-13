@@ -6,6 +6,9 @@ import me.loki2302.changelog.ChangeLogEvent;
 import me.loki2302.changelog.CreateEntityChangeLogEvent;
 import me.loki2302.changelog.DeleteEntityChangeLogEvent;
 import me.loki2302.changelog.UpdateEntityChangeLogEvent;
+import me.loki2302.client.commands.ApiCommand;
+import me.loki2302.client.commands.DeleteNoteCommand;
+import me.loki2302.client.commands.SaveNoteCommand;
 import me.loki2302.dto.ChangeLogTransactionDto;
 
 import java.util.LinkedList;
