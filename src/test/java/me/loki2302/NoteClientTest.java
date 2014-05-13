@@ -1,7 +1,6 @@
 package me.loki2302;
 
-import me.loki2302.client.LocalNote;
-import me.loki2302.client.NoteClient;
+import me.loki2302.client.*;
 import me.loki2302.client.api.NoteOperations;
 import me.loki2302.client.api.TransactionOperations;
 import me.loki2302.dto.NoteDto;
@@ -24,7 +23,15 @@ public class NoteClientTest extends AbstractIntegrationTest {
     public void createNoteClient() {
         noteOperations = new NoteOperations(restTemplate);
         transactionOperations = new TransactionOperations(restTemplate);
-        noteClient = new NoteClient(noteOperations, transactionOperations);
+
+        NoteDataContext noteDataContext = new NoteDataContext();
+        EntityHandlerRegistry entityHandlerRegistry = new EntityHandlerRegistry();
+        entityHandlerRegistry.register("me.loki2302.entities.Note", new NoteEntityHandler());
+        noteClient = new NoteClient(
+                noteDataContext,
+                entityHandlerRegistry,
+                noteOperations,
+                transactionOperations);
     }
 
     @Test

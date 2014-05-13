@@ -12,17 +12,21 @@ import java.util.*;
 
 public class NoteClient {
     private final Queue<ApiCommand> commandQueue = new LinkedList<ApiCommand>();
-    private final NoteDataContext noteDataContext = new NoteDataContext();
+    private final NoteDataContext noteDataContext;
     private final EntityHandlerRegistry entityHandlerRegistry;
     private final NoteOperations noteOperations;
     private final TransactionOperations transactionOperations;
 
-    public NoteClient(NoteOperations noteOperations, TransactionOperations transactionOperations) {
+    public NoteClient(
+            NoteDataContext noteDataContext,
+            EntityHandlerRegistry entityHandlerRegistry,
+            NoteOperations noteOperations,
+            TransactionOperations transactionOperations) {
+
+        this.noteDataContext = noteDataContext;
+        this.entityHandlerRegistry = entityHandlerRegistry;
         this.noteOperations = noteOperations;
         this.transactionOperations = transactionOperations;
-
-        entityHandlerRegistry = new EntityHandlerRegistry();
-        entityHandlerRegistry.register("me.loki2302.entities.Note", new NoteEntityHandler());
     }
 
     public void sendChanges() {
