@@ -6,15 +6,12 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
-public class TransactionOperations {
-    private final RestTemplate restTemplate;
-
+public class TransactionOperations extends OperationsTemplate {
     public TransactionOperations(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
+        super(restTemplate);
     }
 
     public List<ChangeLogTransactionDto> getAllTransactions() {
@@ -47,13 +44,5 @@ public class TransactionOperations {
         return restTemplate.getForObject(
                 buildUri("/transactions/last"),
                 ChangeLogTransactionDto.class);
-    }
-
-    private static String buildUri(String path, Object... vars) {
-        return UriComponentsBuilder
-                .fromUriString("http://localhost:8080")
-                .path(path)
-                .buildAndExpand(vars)
-                .toUriString();
     }
 }

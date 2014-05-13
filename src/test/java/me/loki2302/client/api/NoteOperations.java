@@ -7,19 +7,18 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
-public class NoteOperations {
-    private final RestTemplate restTemplate;
-
+public class NoteOperations extends OperationsTemplate {
     public NoteOperations(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
+        super(restTemplate);
     }
 
     public NoteDto getNote(String id) {
-        return restTemplate.getForObject(buildUri("notes/{id}", id), NoteDto.class);
+        return restTemplate.getForObject(
+                buildUri("notes/{id}", id),
+                NoteDto.class);
     }
 
     public List<NoteDto> getAllNotes() {
@@ -47,13 +46,5 @@ public class NoteOperations {
 
     public void deleteNote(String id) {
         restTemplate.delete(buildUri("notes/{id}", id));
-    }
-
-    private static String buildUri(String path, Object... vars) {
-        return UriComponentsBuilder
-                .fromUriString("http://localhost:8080")
-                .path(path)
-                .buildAndExpand(vars)
-                .toUriString();
     }
 }
