@@ -1,7 +1,7 @@
 package me.loki2302.client;
 
-import me.loki2302.NoteOperations;
-import me.loki2302.TransactionOperations;
+import me.loki2302.client.api.NoteOperations;
+import me.loki2302.client.api.TransactionOperations;
 import me.loki2302.changelog.ChangeLogEvent;
 import me.loki2302.changelog.CreateEntityChangeLogEvent;
 import me.loki2302.changelog.DeleteEntityChangeLogEvent;
@@ -18,6 +18,7 @@ import java.util.Queue;
 public class NoteClient {
     private final Queue<ApiCommand> commandQueue = new LinkedList<ApiCommand>();
     private final LocalRepository<LocalNote> noteRepository = new LocalRepository<LocalNote>();
+    private final EntityHandler noteEntityHandler = new NoteEntityHandler();
     private final NoteOperations noteOperations;
     private final TransactionOperations transactionOperations;
 
@@ -41,11 +42,7 @@ public class NoteClient {
                     CreateEntityChangeLogEvent e = (CreateEntityChangeLogEvent)event;
                     String entityName = e.entityName;
                     if(entityName.equals("me.loki2302.entities.Note")) {
-                        LocalNote note = new LocalNote();
-                        note.id = e.entityId;
-                        note.text = (String)e.properties.get("text");
-                        note.text2 = (String)e.properties.get("text2");
-                        noteRepository.save(note);
+                        noteEntityHandler.handleCreateEntityChangeLogEvent(noteRepository, e);
                     } else {
                         throw new RuntimeException("Unknown entity name " + entityName);
                     }
@@ -53,11 +50,7 @@ public class NoteClient {
                     UpdateEntityChangeLogEvent e = (UpdateEntityChangeLogEvent)event;
                     String entityName = e.entityName;
                     if(entityName.equals("me.loki2302.entities.Note")) {
-                        LocalNote note = new LocalNote();
-                        note.id = e.entityId;
-                        note.text = (String)e.properties.get("text");
-                        note.text2 = (String)e.properties.get("text2");
-                        noteRepository.save(note);
+                        noteEntityHandler.handleUpdateEntityChangeLogEvent(noteRepository, e);
                     } else {
                         throw new RuntimeException("Unknown entity name " + entityName);
                     }
@@ -65,7 +58,7 @@ public class NoteClient {
                     DeleteEntityChangeLogEvent e = (DeleteEntityChangeLogEvent)event;
                     String entityName = e.entityName;
                     if(entityName.equals("me.loki2302.entities.Note")) {
-                        noteRepository.delete(e.entityId);
+                        noteEntityHandler.handleDeleteEntityChangeLogEvent(noteRepository, e);
                     } else {
                         throw new RuntimeException("Unknown entity name " + entityName);
                     }

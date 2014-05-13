@@ -3,6 +3,8 @@ package me.loki2302;
 import me.loki2302.changelog.CreateEntityChangeLogEvent;
 import me.loki2302.changelog.DeleteEntityChangeLogEvent;
 import me.loki2302.changelog.UpdateEntityChangeLogEvent;
+import me.loki2302.client.api.NoteOperations;
+import me.loki2302.client.api.TransactionOperations;
 import me.loki2302.dto.ChangeLogTransactionDto;
 import org.junit.Before;
 import org.junit.Test;

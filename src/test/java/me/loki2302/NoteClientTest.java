@@ -2,6 +2,8 @@ package me.loki2302;
 
 import me.loki2302.client.LocalNote;
 import me.loki2302.client.NoteClient;
+import me.loki2302.client.api.NoteOperations;
+import me.loki2302.client.api.TransactionOperations;
 import me.loki2302.dto.NoteDto;
 import org.junit.Before;
 import org.junit.Test;

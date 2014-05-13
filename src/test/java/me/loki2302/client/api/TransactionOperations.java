@@ -1,4 +1,4 @@
-package me.loki2302;
+package me.loki2302.client.api;
 
 import me.loki2302.dto.ChangeLogTransactionDto;
 import org.springframework.core.ParameterizedTypeReference;

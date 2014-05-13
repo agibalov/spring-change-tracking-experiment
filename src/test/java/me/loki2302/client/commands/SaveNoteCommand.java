@@ -1,6 +1,6 @@
 package me.loki2302.client.commands;
 
-import me.loki2302.NoteOperations;
+import me.loki2302.client.api.NoteOperations;
 import me.loki2302.client.LocalNote;
 import me.loki2302.client.LocalRepository;
 

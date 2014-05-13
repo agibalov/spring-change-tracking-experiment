@@ -1,5 +1,6 @@
 package me.loki2302;
 
+import me.loki2302.client.api.TransactionOperations;
 import me.loki2302.dto.ChangeLogTransactionDto;
 import org.junit.Before;
 import org.junit.Test;
