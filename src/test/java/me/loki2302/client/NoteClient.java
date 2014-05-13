@@ -36,7 +36,7 @@ public class NoteClient {
         List<ChangeLogTransactionDto> transactions = transactionOperations.getAllTransactions();
         for(ChangeLogTransactionDto transaction : transactions) {
             for(ChangeLogEvent event : transaction.events) {
-                entityHandlerRegistry.handle(noteDataContext, event);
+                entityHandlerRegistry.handleChangeLogEvent(noteDataContext, event);
             }
         }
     }

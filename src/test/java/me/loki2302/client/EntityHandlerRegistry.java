@@ -19,7 +19,7 @@ public class EntityHandlerRegistry {
         entityHandlers.put(entityName, entityHandler);
     }
 
-    public void handle(NoteDataContext noteDataContext, ChangeLogEvent event) {
+    public void handleChangeLogEvent(NoteDataContext noteDataContext, ChangeLogEvent event) {
         String entityName = event.entityName;
         EntityHandler entityHandler = entityHandlers.get(entityName);
         if(entityHandler == null) {
@@ -28,15 +28,22 @@ public class EntityHandlerRegistry {
 
         if(event instanceof CreateEntityChangeLogEvent) {
             CreateEntityChangeLogEvent e = (CreateEntityChangeLogEvent)event;
-            entityHandler.handleCreateEntityChangeLogEvent(noteDataContext, e);
-        } else if(event instanceof UpdateEntityChangeLogEvent) {
-            UpdateEntityChangeLogEvent e = (UpdateEntityChangeLogEvent)event;
-            entityHandler.handleUpdateEntityChangeLogEvent(noteDataContext, e);
-        } else if(event instanceof DeleteEntityChangeLogEvent) {
-            DeleteEntityChangeLogEvent e = (DeleteEntityChangeLogEvent)event;
-            entityHandler.handleDeleteEntityChangeLogEvent(noteDataContext, e);
-        } else {
-            throw new RuntimeException("Unknown event type " + event.getClass());
+            entityHandler.handleCreateEntity(noteDataContext, e);
+            return;
         }
+
+        if(event instanceof UpdateEntityChangeLogEvent) {
+            UpdateEntityChangeLogEvent e = (UpdateEntityChangeLogEvent)event;
+            entityHandler.handleUpdateEntity(noteDataContext, e);
+            return;
+        }
+
+        if(event instanceof DeleteEntityChangeLogEvent) {
+            DeleteEntityChangeLogEvent e = (DeleteEntityChangeLogEvent)event;
+            entityHandler.handleDeleteEntity(noteDataContext, e);
+            return;
+        }
+
+        throw new RuntimeException("Unknown event type " + event.getClass());
     }
 }

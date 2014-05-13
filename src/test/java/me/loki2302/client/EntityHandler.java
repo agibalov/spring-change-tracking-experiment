@@ -5,7 +5,7 @@ import me.loki2302.changelog.DeleteEntityChangeLogEvent;
 import me.loki2302.changelog.UpdateEntityChangeLogEvent;
 
 public interface EntityHandler {
-    void handleCreateEntityChangeLogEvent(NoteDataContext noteDataContext, CreateEntityChangeLogEvent event);
-    void handleUpdateEntityChangeLogEvent(NoteDataContext noteDataContext, UpdateEntityChangeLogEvent event);
-    void handleDeleteEntityChangeLogEvent(NoteDataContext noteDataContext, DeleteEntityChangeLogEvent event);
+    void handleCreateEntity(NoteDataContext dataContext, CreateEntityChangeLogEvent event);
+    void handleUpdateEntity(NoteDataContext dataContext, UpdateEntityChangeLogEvent event);
+    void handleDeleteEntity(NoteDataContext dataContext, DeleteEntityChangeLogEvent event);
 }
